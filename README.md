@@ -15,9 +15,8 @@ This project aims to develop a specialized monitoring device to ensure the safe 
 * LCD Display: Shows real-time status updates.
 
 ### Components Used
-* GPS Module
-* Temperature Sensor
-* Speed Sensor
+* GPS - Neo 6m Module
+* Temperature - DS18B20 Sensor
 * LCD Display
 * ESP32 Microcontroller
 * GSM Module (For Alerts)
