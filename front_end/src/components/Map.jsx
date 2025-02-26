@@ -1,9 +1,11 @@
-'use client';
+"use client";
 
 import { useState, useEffect } from "react";
-import { GoogleMap, useLoadScript, Marker } from "@react-google-maps/api";
+import { GoogleMap, useLoadScript, Marker, Polyline } from "@react-google-maps/api";
+import { firestore } from "../config/firebase";
 import LoadingSpinner from "./LoadingSpinner";
 import ErrorLoadingSpinner from "./ErrorLoading";
+import { collection, onSnapshot } from "firebase/firestore";
 
 const mapContainerStyle = {
   width: "100%",
@@ -21,32 +23,65 @@ const Map = () => {
   });
 
   const [vehicleIcon, setVehicleIcon] = useState({
-    url: '/vehicleIcon.png',
-    scaledSize: null, 
+    url: "/vehicleIcon.png",
+    scaledSize: null,
   });
+
+  const [data, setData] = useState([]);
+  const [vehiclePosition, setVehiclePosition] = useState(center); // Initialize with default center
+  const [pathCoordinates, setPathCoordinates] = useState([]); // Store coordinates for the polyline
 
   useEffect(() => {
     if (isLoaded) {
+      // Set the vehicle icon size
       setVehicleIcon((prevIcon) => ({
         ...prevIcon,
-        scaledSize: new window.google.maps.Size(40, 40), 
+        scaledSize: new window.google.maps.Size(40, 40),
       }));
 
-      // Reference to the Firebase Realtime Database path
-      // const vehicleRef = ref(database, 'vehicle/location');
+      // Reference to the Firestore subcollection
+      const vehicleId = "3MlPDEStfBZvXo6g6gFN"; // Replace with the actual vehicle ID
+      const gpsLocationRef = collection(
+        firestore,
+        `Vehicles/${vehicleId}/GPS_locations`
+      );
 
       // Listen for real-time updates
-      // onValue(vehicleRef, (snapshot) => {
-      //   const data = snapshot.val();
-      //   if (data) {
-      //     setVehiclePosition({
-      //       lat: data.latitude,
-      //       lng: data.longitude,
-      //     });
-      //   }
-      // });
+      const unsubscribe = onSnapshot(
+        gpsLocationRef,
+        (querySnapshot) => {
+          const items = [];
+          const coordinates = []; // Store coordinates for the polyline
+          querySnapshot.forEach((doc) => {
+            const locationData = doc.data();
+            items.push({ id: doc.id, ...locationData });
+
+            // Add coordinates to the path
+            if (locationData.coordinates) {
+              coordinates.push({
+                lat: locationData.coordinates.latitude,
+                lng: locationData.coordinates.longitude,
+              });
+
+              // Update the vehicle position with the latest coordinates
+              setVehiclePosition({
+                lat: locationData.coordinates.latitude,
+                lng: locationData.coordinates.longitude,
+              });
+            }
+          });
+          setData(items);
+          setPathCoordinates(coordinates); // Update the path coordinates
+        },
+        (error) => {
+          console.error("Error fetching GPS locations:", error);
+        }
+      );
+
+      // Clean up the listener on unmount
+      return () => unsubscribe();
     }
-  }, [isLoaded]);
+  }, [isLoaded]); 
 
   if (loadError) return <ErrorLoadingSpinner />;
   if (!isLoaded) return <LoadingSpinner />;
@@ -56,13 +91,24 @@ const Map = () => {
       <GoogleMap
         mapContainerStyle={mapContainerStyle}
         zoom={12}
-        center={center}
+        center={vehiclePosition} // Center the map on the vehicle's position
       >
-        {
-          vehicleIcon.scaledSize && (
-            <Marker position={center} icon={vehicleIcon} />
-          )
-        }
+        {/* Render the vehicle's position as a Marker with a custom icon */}
+        {vehicleIcon.scaledSize && (
+          <Marker icon={vehicleIcon} position={vehiclePosition} />
+        )}
+
+        {/* Render the path as a Polyline */}
+        {pathCoordinates.length > 1 && (
+          <Polyline
+            path={pathCoordinates}
+            options={{
+              strokeColor: "#FF0000", // Red color
+              strokeOpacity: 1.0,
+              strokeWeight: 2,
+            }}
+          />
+        )}
       </GoogleMap>
     </div>
   );
