@@ -18,7 +18,7 @@ This project aims to develop a specialized monitoring device to ensure the safe 
 * Temperature Sensor
 * Speed Sensor
 * LCD Display
-* Microcontroller (Specify Model)
+* ESP32 Microcontroller
 * GSM Module (For Alerts)
 * Power Supply Unit
 * Other relevant electronic components
