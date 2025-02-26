@@ -7,6 +7,7 @@ This project aims to develop a specialized monitoring device to ensure the safe 
 
 ### Features
 * Live Location Tracking: GPS-based monitoring to track the vehicle's route.
+* Cloud Integration: Sends vehicle data to a cloud platform for remote monitoring.
 * Speed Monitoring: Detects and alerts if the vehicle is moving at high speeds.
 * Temperature Monitoring: Measures the temperature inside the vehicle and sends alerts if it deviates from the optimal range.
 * Accident & Theft Alerts: Sends notifications in case of accidents or theft.
