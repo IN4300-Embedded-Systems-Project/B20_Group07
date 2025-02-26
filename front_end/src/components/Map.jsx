@@ -3,6 +3,8 @@ import {
   useLoadScript,
   Marker,
 } from "@react-google-maps/api";
+import LoadingSpinner from "./LoadingSpinner";
+import ErrorLoadingSpinner from "./ErrorLoading";
 
 const mapContainerStyle = {
   width: "100%",
@@ -19,11 +21,11 @@ const Map = () => {
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
   });
 
-  if (loadError) return <div>Error loading maps</div>;
-  if (!isLoaded) return <div>Loading Maps...</div>;
+  if (loadError) return <ErrorLoadingSpinner />;
+  if (!isLoaded) return <LoadingSpinner />;
 
   return (
-    <div className="flex w-full h-screen">
+    <div className="flex w-full h-[calc(100vh-44px)]">
       <GoogleMap
         mapContainerStyle={mapContainerStyle}
         zoom={12}
