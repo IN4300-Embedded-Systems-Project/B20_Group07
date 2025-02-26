@@ -29,3 +29,5 @@ This project aims to develop a specialized monitoring device to ensure the safe 
 * Monitoring Interface: Web Dashboard
 
 ### Circuit Diagram
+![image](https://github.com/user-attachments/assets/de588d79-5c47-4aed-9c77-cbb1acedce8e)
+
