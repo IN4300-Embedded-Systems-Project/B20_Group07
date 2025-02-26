@@ -1,4 +1,3 @@
-// components/GoogleMapsLoader.js
 import Script from 'next/script';
 
 const GoogleMapsLoader = () => {
