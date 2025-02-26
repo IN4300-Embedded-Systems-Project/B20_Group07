@@ -1,4 +1,3 @@
-// components/Map.js
 import {
   GoogleMap,
   useLoadScript,
@@ -11,8 +10,8 @@ const mapContainerStyle = {
 };
 
 const center = {
-    lat: 37.7749, // Latitude for San Francisco
-    lng: -122.4194, // Longitude for San Francisco
+    lat: 7.8731, 
+    lng: 80.7718,
 };
 
 const Map = () => {
