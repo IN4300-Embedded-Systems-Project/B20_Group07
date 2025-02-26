@@ -22,4 +22,9 @@ This project aims to develop a specialized monitoring device to ensure the safe 
 * GSM Module (For Alerts)
 * Power Supply Unit
 
+### Cloud Integration
+* Platform: Firebase / Google Cloud Platform
+* Data Sent: GPS coordinates, speed, temperature, alerts
+* Monitoring Interface: Web Dashboard
+
 ### Circuit Diagram
