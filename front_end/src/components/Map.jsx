@@ -52,7 +52,7 @@ const Map = () => {
   if (!isLoaded) return <LoadingSpinner />;
 
   return (
-    <div className="flex w-full h-[calc(100vh-44px)]">
+    <div className="flex w-full h-[calc(100vh-164px)] rounded-lg">
       <GoogleMap
         mapContainerStyle={mapContainerStyle}
         zoom={12}

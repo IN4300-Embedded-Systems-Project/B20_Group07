@@ -5,18 +5,28 @@ import Map from "@/components/Map";
 
 export default function Home() {
   return (
-    <div className="">
-      <div className="flex flex-row items-center justify-center text-green-700 font-bold gap-3 shadow-md">
-        <Image src="/logo.png" alt="Vehicle Icon" width={30} height={30} />
-        <h1 className="flex items-center justify-center md:text-xl text-sm p-2">{`Track the Vehicle's Location...`}</h1>
-        <Image
-          src="/vehicleSmoke.png"
-          alt="Vehicle Icon"
-          width={50}
-          height={40}
-        />
+    <div className="flex flex-col text-white">
+      <div className="flex flex-col justify-center items-center shadow-md shadow-slate-400 p-6">
+        <div className="flex flex-row gap-4">
+          <Image src="/logo.png" alt="Vehicle Icon" width={40} height={30} />
+          <h1 className="text-2xl">Vehicle Tracking System</h1>
+        </div>
+          <p className="flex items-center justify-center text-sm">{`Track your Vehicle's Location...`}</p>
       </div>
-      <Map />
+      <div className="flex flex-row">
+        <div className="flex flex-col w-1/2 items-center justify-center">
+          <p>Check your vehicle is safe or not</p>
+          <Image
+            src="/vehicleSmoke.png"
+            alt="Vehicle Icon"
+            width={400}
+            height={300}
+          />
+        </div>
+        <div className="flex w-2/3 m-4">
+          <Map />
+        </div>
+      </div>
     </div>
   );
 }
