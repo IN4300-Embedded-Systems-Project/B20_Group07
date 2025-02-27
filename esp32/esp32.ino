@@ -20,7 +20,7 @@ const char* password = "00000000";
 String serverName = "https://asia-southeast1-vehicle-tracking-system-e465c.cloudfunctions.net/updateVehicleData";
 
 unsigned long lastTime = 0;
-unsigned long timerDelay = 5000;
+unsigned long timerDelay = 3000;
 
 #define RXD2 16
 #define TXD2 17
@@ -90,13 +90,24 @@ void loop() {
       Serial.print(temperature);
       Serial.println("ºC");
 
+      // Convert GPS time to +5:30 timezone
+      int hour = gps.time.hour() + 5;
+      int minute = gps.time.minute() + 30;
+      if (minute >= 60) {
+        minute -= 60;
+        hour += 1;
+      }
+      if (hour >= 24) {
+        hour -= 24;
+      }
+
       // Displaying time on LCD
       lcd.clear();
       lcd.setCursor(0, 0);
       lcd.print("Time: ");
-      lcd.print(gps.time.hour());
+      lcd.print(hour);
       lcd.print(":");
-      lcd.print(gps.time.minute());
+      lcd.print(minute);
       lcd.print(":");
       lcd.print(gps.time.second());
 
@@ -157,7 +168,7 @@ void sendData(String vehicleId, float temperature, double longitude, double lati
   if (hasSignificantChange(longitude, latitude, temperature)) {
     if (WiFi.status() == WL_CONNECTED) {
       HTTPClient http;
-      String serverPath = serverName + "/?vehicleId=" + vehicleId + "&temperature=" + temperature + "&longitude=" + longitude + "&latitude=" + latitude + "&speed=" + speed + "&altitude=" + altitude + "&hdop=" + hdop + "&satellites=" + satellites + "&time=" + time;
+      String serverPath = serverName + "/?vehicleId=" + vehicleId + "&temperature=" + temperature + "&longitude=" + String(longitude, 6) + "&latitude=" + String(latitude, 6) + "&speed=" + String(speed, 3) + "&altitude=" + String(altitude, 6) + "&hdop=" + String(hdop, 6) + "&satellites=" + satellites + "&time=" + time;
       Serial.print("Server Path: ");
       Serial.println(serverPath);
       http.begin(serverPath.c_str());
@@ -178,6 +189,10 @@ void sendData(String vehicleId, float temperature, double longitude, double lati
       lastLongitude = longitude;
       lastLatitude = latitude;
       lastTemperature = temperature;
+
+      lcd.setCursor(0, 1);
+      lcd.print("Data sent       ");
+      delay(2000);
     } else {
       Serial.println("WiFi Disconnected");
       lcd.clear();
@@ -185,10 +200,10 @@ void sendData(String vehicleId, float temperature, double longitude, double lati
       lcd.print("WiFi Disconnected");
       delay(2000);
     }
+  } else {
     Serial.println("No significant movement or temperature change");
-    lcd.clear();
     lcd.setCursor(0, 1);
-    lcd.print("No significant change");
+    lcd.print("No moving       ");
     delay(2000);
   }
 }
