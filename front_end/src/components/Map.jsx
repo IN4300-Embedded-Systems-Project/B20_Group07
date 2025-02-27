@@ -48,6 +48,9 @@ const Map = () => {
   const [startTime, setStartTime] = useState(new Date());
   const [endTime, setEndTime] = useState(new Date());
 
+  // State to track the hovered marker
+  const [hoveredMarker, setHoveredMarker] = useState(null);
+
   useEffect(() => {
     if (isLoaded) {
       setVehicleIcon((prevIcon) => ({
@@ -132,7 +135,7 @@ const Map = () => {
         </div>
       </div>
 
-      <div className="flex-1">
+      <div className="flex-1 relative">
         <GoogleMap
           mapContainerStyle={mapContainerStyle}
           zoom={12}
@@ -141,6 +144,18 @@ const Map = () => {
           {vehicleIcon.scaledSize && (
             <Marker icon={vehicleIcon} position={vehiclePosition} />
           )}
+
+          {data.map((item) => (
+            <Marker
+              key={item.id}
+              position={{
+                lat: item.coordinate.latitude,
+                lng: item.coordinate.longitude,
+              }}
+              onMouseOver={() => setHoveredMarker(item)}
+              onMouseOut={() => setHoveredMarker(null)}
+            />
+          ))}
 
           {pathCoordinates.length > 1 && (
             <Polyline
@@ -153,6 +168,26 @@ const Map = () => {
             />
           )}
         </GoogleMap>
+
+        {/* Tooltip to display temperature on hover */}
+        {hoveredMarker && (
+          <div
+            style={{
+              position: "absolute",
+              top: `calc(${hoveredMarker.coordinate.latitude}% + 20px)`,
+              left: `calc(${hoveredMarker.coordinate.longitude}% + 20px)`,
+              backgroundColor: "black",
+              padding: "5px",
+              border: "1px solid #ccc",
+              borderRadius: "7px",
+              zIndex: 1000,
+              pointerEvents: "none", // Ensure the tooltip doesn't interfere with map interactions
+            }}
+            className="text-white text-center"
+          >
+            Temperature {hoveredMarker.temperature}°C
+          </div>
+        )}
       </div>
     </div>
   );
